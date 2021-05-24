@@ -41,6 +41,7 @@ const App = () => {
       <button onClick={handleVote}>vote</button>
       <h2>Anecdote with most votes</h2>
       <p>{winner}</p>
+      {}
     </div>
   );
 };
