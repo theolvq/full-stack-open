@@ -10,6 +10,8 @@ const Results = ({ countriesToShow }) => {
     setId(id);
   };
 
+  const buttonLabel = isVisible ? 'Hide' : 'Show';
+
   const selectedCountry = countriesToShow.find(
     country => country.alpha2Code === id
   );
@@ -22,7 +24,7 @@ const Results = ({ countriesToShow }) => {
             <p>
               {country.name}{' '}
               <button onClick={() => showDetails(country.alpha2Code)}>
-                Show
+                {buttonLabel}
               </button>{' '}
             </p>
             {isVisible && country === selectedCountry && (
