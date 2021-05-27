@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import AddContact from './AddContact';
-import Contact from './Contact';
-import Search from './Search';
+import AddContact from './components/AddContact';
+import Contact from './components/Contact';
+import Notification from './components/Notification';
+import Search from './components/Search';
 import contactService from './services/contacts';
 
 const App = () => {
@@ -9,6 +10,7 @@ const App = () => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [filterInput, setFilterInput] = useState('');
+  const [confirmationMessage, setConfirmationMessage] = useState('');
 
   const handleNameChange = e => {
     setNewName(e.target.value);
@@ -40,22 +42,44 @@ const App = () => {
       );
       contactService
         .update(alreadyAddedContact.id, personObject)
-        .then(returnedContact =>
+        .then(returnedContact => {
           setPersons(
             persons.map(person =>
               person.id !== alreadyAddedContact.id ? person : returnedContact
             )
-          )
-        );
+          );
+          setConfirmationMessage(
+            `${personObject.name}'s number was change to ${personObject.number}.`
+          );
+          setTimeout(() => setConfirmationMessage(null), 5000);
+        })
+        .catch(err => {
+          setConfirmationMessage(
+            `An error has occured, the contact details of ${personObject.name} have already been removed from the server`
+          );
+          setTimeout(() => setConfirmationMessage(null), 5000);
+        });
       setNewName('');
       setNewNumber('');
       return;
     }
-    contactService.create(personObject).then(returnedContact => {
-      setPersons(persons.concat(returnedContact));
-      setNewName('');
-      setNewNumber('');
-    });
+    contactService
+      .create(personObject)
+      .then(returnedContact => {
+        setPersons(persons.concat(returnedContact));
+        setConfirmationMessage(
+          `${personObject.name} was added to the contacts list.`
+        );
+        setTimeout(() => setConfirmationMessage(null), 5000);
+        setNewName('');
+        setNewNumber('');
+      })
+      .catch(err => {
+        setConfirmationMessage(
+          `An error has occured, the contact details of ${personObject.name} have already been removed from the server`
+        );
+        setTimeout(() => setConfirmationMessage(null), 5000);
+      });
   };
 
   const handleDelete = id => {
@@ -64,9 +88,17 @@ const App = () => {
       `Are you sure you want to delete ${person.name}`
     );
     if (confirmation) {
-      contactService.deleteContact(id).then(_ => {
-        setPersons(persons.filter(person => person.id !== id));
-      });
+      contactService
+        .deleteContact(id)
+        .then(_ => {
+          setPersons(persons.filter(person => person.id !== id));
+        })
+        .catch(err => {
+          setConfirmationMessage(
+            `An error has occured, the contact details of ${person.name} have already been removed from the server`
+          );
+          setTimeout(() => setConfirmationMessage(null), 5000);
+        });
     }
 
     console.log('clicking', id);
@@ -84,6 +116,7 @@ const App = () => {
 
   return (
     <div>
+      <Notification message={confirmationMessage} />
       <h2>Phonebook</h2>
       <Search value={filterInput} handleFilterChange={handleFilterChage} />
 
