@@ -1,8 +1,8 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import AddContact from './AddContact';
 import Contact from './Contact';
 import Search from './Search';
+import contactService from './services/contacts';
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -32,13 +32,44 @@ const App = () => {
       person => person.name === personObject.name
     );
     if (alreadyAdded) {
-      alert(`${personObject.name} is already added to phonebook`);
+      alert(
+        `${personObject.name} is already added to phonebook, replace the old number with the new one?`
+      );
+      const alreadyAddedContact = persons.find(
+        person => person.name === personObject.name
+      );
+      contactService
+        .update(alreadyAddedContact.id, personObject)
+        .then(returnedContact =>
+          setPersons(
+            persons.map(person =>
+              person.id !== alreadyAddedContact.id ? person : returnedContact
+            )
+          )
+        );
       setNewName('');
+      setNewNumber('');
       return;
     }
-    setPersons(persons.concat(personObject));
-    setNewName('');
-    setNewNumber('');
+    contactService.create(personObject).then(returnedContact => {
+      setPersons(persons.concat(returnedContact));
+      setNewName('');
+      setNewNumber('');
+    });
+  };
+
+  const handleDelete = id => {
+    const person = persons.find(person => person.id === id);
+    const confirmation = window.confirm(
+      `Are you sure you want to delete ${person.name}`
+    );
+    if (confirmation) {
+      contactService.deleteContact(id).then(_ => {
+        setPersons(persons.filter(person => person.id !== id));
+      });
+    }
+
+    console.log('clicking', id);
   };
 
   const contactsToShow = persons.filter(person =>
@@ -46,9 +77,9 @@ const App = () => {
   );
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(res => setPersons(res.data));
+    contactService
+      .getAll()
+      .then(initialContacts => setPersons(initialContacts));
   }, []);
 
   return (
@@ -67,7 +98,7 @@ const App = () => {
 
       <h2>Numbers</h2>
       {contactsToShow.map(person => (
-        <Contact key={person.name} person={person} />
+        <Contact key={person.id} person={person} handleDelete={handleDelete} />
       ))}
     </div>
   );
