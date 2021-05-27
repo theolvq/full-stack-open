@@ -6,7 +6,7 @@ const ResultDetails = ({ country }) => {
       <div key={country.alpha2Code}>
         <h2>{country.name}</h2>
         <p>Capital: {country.capital}</p>
-        <p>Population: {country.population}</p>
+        <p>Population: {country.population.toLocaleString()}</p>
         <h3>Languages spoken in the country</h3>
         <ul>
           {country.languages.map(language => (
