@@ -49,14 +49,13 @@ const App = () => {
             )
           );
           setConfirmationMessage(
-            `${personObject.name}'s number was change to ${personObject.number}.`
+            `${personObject.name}'s number was changed to ${personObject.number}.`
           );
           setTimeout(() => setConfirmationMessage(null), 5000);
         })
         .catch(err => {
-          setConfirmationMessage(
-            `An error has occured, the contact details of ${personObject.name} have already been removed from the server`
-          );
+          console.log(err.response.data);
+          setConfirmationMessage(err.response.data.error);
           setTimeout(() => setConfirmationMessage(null), 5000);
         });
       setNewName('');
@@ -75,9 +74,8 @@ const App = () => {
         setNewNumber('');
       })
       .catch(err => {
-        setConfirmationMessage(
-          `An error has occured, the contact details of ${personObject.name} have already been removed from the server`
-        );
+        console.log(err.response.data.error);
+        setConfirmationMessage(err.response.data.error);
         setTimeout(() => setConfirmationMessage(null), 5000);
       });
   };
@@ -94,14 +92,10 @@ const App = () => {
           setPersons(persons.filter(person => person.id !== id));
         })
         .catch(err => {
-          setConfirmationMessage(
-            `An error has occured, the contact details of ${person.name} have already been removed from the server`
-          );
+          setConfirmationMessage(err.response.data.error);
           setTimeout(() => setConfirmationMessage(null), 5000);
         });
     }
-
-    console.log('clicking', id);
   };
 
   const contactsToShow = persons.filter(person =>

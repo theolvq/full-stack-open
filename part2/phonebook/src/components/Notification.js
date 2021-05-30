@@ -9,7 +9,7 @@ const Notification = ({ message }) => {
   return message ? (
     <div
       className="notification"
-      style={message.includes('error') ? errorStyle : notifStyle}
+      style={message.includes('fail') ? errorStyle : notifStyle}
     >
       {message}
     </div>
