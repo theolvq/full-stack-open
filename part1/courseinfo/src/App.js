@@ -4,6 +4,8 @@ import Header from './components/Header';
 import Total from './components/Total';
 
 const App = () => {
+  let variable = 8;
+  console.log(variable);
   const course = {
     name: 'Half Stack application development',
     parts: [
