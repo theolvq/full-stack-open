@@ -2,7 +2,7 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-  "title": "I love MongoDB", 
+  "title": "Refactoring", 
   "author": "Theo",
   "url": "https://backendmasters.com", 
   "likes": 1000
