@@ -1,6 +1,6 @@
 const listHelper = require('../utils/list_helper');
 
-describe('total likes', () => {
+describe.skip('total likes', () => {
   test('empty list returns 0', () => {
     const blogs = [];
     const result = listHelper.totalLikes(blogs);
@@ -71,7 +71,7 @@ describe('total likes', () => {
   });
 });
 
-describe('top likes', () => {
+describe.skip('top likes', () => {
   test('only one item', () => {
     const blogs = [
       {
