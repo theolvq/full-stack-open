@@ -1,0 +1,11 @@
+
+PUT http://localhost:3003/api/blogs/60baa8d54fc2020d48e0bf5e
+Content-Type: application/json
+
+{
+  "title": "PUT test 2",
+  "author": "myself",
+  "url": "https://upatestuff.com",
+  "likes": 6
+}
+
