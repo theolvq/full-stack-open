@@ -57,6 +57,12 @@ const initialList = [
   },
 ];
 
+const notesInDb = async () => {
+  const posts = await Blog.find({});
+  return posts.map(post => post.toJSON());
+};
+
 module.exports = {
   initialList,
+  notesInDb,
 };
