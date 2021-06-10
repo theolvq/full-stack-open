@@ -1,15 +1,3 @@
-const totalLikes = blogs => blogs.reduce((sum, blog) => sum + blog.likes, 0);
-
-const topLikes = blogs => blogs.sort((a, b) => b.likes - a.likes)[0];
-
-const mostBlogs = blogs => {
-  blogs.reduce();
-};
-
-module.exports = {
-  totalLikes,
-  topLikes,
-};
 const blogs = [
   {
     title: 'Test',
@@ -75,3 +63,28 @@ const blogs = [
     id: '60bad889e9a50414e9a82e03',
   },
 ];
+
+const totalLikes = blogs => blogs.reduce((sum, blog) => sum + blog.likes, 0);
+
+const topLikes = blogs => blogs.sort((a, b) => b.likes - a.likes)[0];
+
+// const mostBlogs = blogs => {
+//   const authors = blogs.map(blog => blog.author);
+//   const numOfPosts = authors.reduce((total, author) => {
+//     total[author] = (total[author] || 0) + 1;
+//     return total;
+//   }, {});
+//   console.log(numOfPosts);
+//   const test = authors.reduce((total, author) => {
+//     total.push({ total: (author || 0) + 1 });
+//     console.log(total);
+//     return total;
+//   }, []);
+// };
+
+// mostBlogs(blogs);
+
+module.exports = {
+  totalLikes,
+  topLikes,
+};

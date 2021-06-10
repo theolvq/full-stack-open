@@ -8,6 +8,7 @@ const middleware = require('./utils/middleware');
 const logger = require('./utils/logger');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
+const usersRouter = require('./controllers/users');
 
 logger.info('connecting to', config.MONGODB_URI);
 
@@ -28,6 +29,7 @@ mongoose
 app.use(cors());
 app.use(express.json());
 app.use('/api/blogs', blogRouter);
+app.use('/api/users', usersRouter);
 morgan.token('body', req => JSON.stringify(req.body));
 app.use(morgan(':method :url :response-time ms \n :body'));
 app.use(middleware.unknownEndpoint);
