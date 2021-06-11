@@ -2,10 +2,12 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-  "title": "Refactoring part3", 
-  "author": "Theo",
-  "url": "https://backendmasters.com", 
-  "likes": 0
+  "title": "Dunno number 2", 
+  "author": "Charlie",
+  "url": "https://fullstackopen.com", 
+  "likes": 65,
+  "userId": "60c3ee9d14a338075dc91612"
+
 }
 
   # title: String,
