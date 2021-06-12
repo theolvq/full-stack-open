@@ -1,13 +1,12 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImRhYXdhMiIsImlkIjoiNjBjNGUxMDlmYTViYTEwZWNkZTIyMGIyIiwiaWF0IjoxNjIzNTE1NzAyLCJleHAiOjE2MjM1MTkzMDJ9.bxJ_wPzeB9UMDEqtxbdTodLHGrCkmSgEZLcgzaGk3G8
 
 {
-  "title": "Dunno number 2", 
-  "author": "Charlie",
+  "title": "Bearer and user tokens from middleware test Post", 
+  "author": "Theo",
   "url": "https://fullstackopen.com", 
-  "likes": 65,
-  "userId": "60c3ee9d14a338075dc91612"
-
+  "likes": 34
 }
 
   # title: String,

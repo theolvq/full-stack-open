@@ -9,6 +9,7 @@ const logger = require('./utils/logger');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
 const usersRouter = require('./controllers/users');
+const loginRouter = require('./controllers/login');
 
 logger.info('connecting to', config.MONGODB_URI);
 
@@ -28,8 +29,10 @@ mongoose
 
 app.use(cors());
 app.use(express.json());
-app.use('/api/blogs', blogRouter);
+app.use(middleware.tokenExtractor);
+app.use('/api/blogs', middleware.userExtractor, blogRouter);
 app.use('/api/users', usersRouter);
+app.use('/api/login', loginRouter);
 morgan.token('body', req => JSON.stringify(req.body));
 app.use(morgan(':method :url :response-time ms \n :body'));
 app.use(middleware.unknownEndpoint);

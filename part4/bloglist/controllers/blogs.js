@@ -1,6 +1,14 @@
 const blogRouter = require('express').Router();
 const Blog = require('../models/blog');
 const User = require('../models/user');
+const jwt = require('jsonwebtoken');
+
+// const getTokenFrom = req => {
+//   const authorization = req.get('authorization');
+//   return authorization && authorization.toLowerCase().startsWith('bearer ')
+//     ? authorization.substring(7)
+//     : null;
+// };
 
 blogRouter.get('/', async (req, res) => {
   const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 });
@@ -14,7 +22,7 @@ blogRouter.get('/:id', async (req, res) => {
 
 blogRouter.post('/', async (req, res) => {
   const body = req.body;
-  const user = await User.findById(body.userId);
+  const user = req.user;
 
   const blog = new Blog({
     title: body.title,
@@ -44,8 +52,13 @@ blogRouter.put('/:id', async (req, res) => {
 });
 
 blogRouter.delete('/:id', async (req, res) => {
-  await Blog.findByIdAndRemove(req.params.id);
-  res.status(204).end();
+  const user = req.user;
+
+  const blog = await Blog.findById(req.params.id);
+  if (blog.user.toString() === user._id.toString()) {
+    await Blog.findByIdAndRemove(req.params.id);
+    res.status(204).end();
+  }
 });
 
 module.exports = blogRouter;
