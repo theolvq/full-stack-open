@@ -73,12 +73,12 @@ const mostBlogs = blogs => {
     total[post.author] = (total[post.author] || 0) + 1;
     return total;
   }, {});
-  return blogs
-    .map(post => ({
-      author: post.author,
-      blogs: blogPerAuthor[post.author],
-    }))
-    .sort((a, b) => b.blogs - a.blogs)[0];
+  const keys = Object.keys(blogPerAuthor);
+  const values = Object.values(blogPerAuthor);
+  return Array.from({ length: keys.length }, (_, i) => ({
+    author: keys[i],
+    blogs: values[i],
+  })).sort((a, b) => b.blogs - a.blogs)[0];
 };
 
 const mostLikes = blogs => {
@@ -86,12 +86,12 @@ const mostLikes = blogs => {
     total[post.author] = (total[post.author] || 0) + post.likes;
     return total;
   }, {});
-  return blogs
-    .map(post => ({
-      author: post.author,
-      likes: likesPerAuthor[post.author],
-    }))
-    .sort((a, b) => b.likes - a.likes)[0];
+  const keys = Object.keys(likesPerAuthor);
+  const values = Object.values(likesPerAuthor);
+  return Array.from({ length: keys.length }, (_, i) => ({
+    author: keys[i],
+    likes: values[i],
+  })).sort((a, b) => b.likes - a.likes)[0];
 };
 
 module.exports = {

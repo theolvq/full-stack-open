@@ -22,7 +22,7 @@ const User = require('../models/user');
 // );
 // });
 
-xdescribe('Blog tests', () => {
+describe('Blog tests', () => {
   beforeEach(async () => {
     await Blog.deleteMany({});
     await Blog.insertMany(helper.initialList);
