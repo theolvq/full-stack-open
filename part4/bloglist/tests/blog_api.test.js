@@ -5,22 +5,7 @@ const app = require('../app');
 const api = supertest(app);
 const Blog = require('../models/blog');
 const User = require('../models/user');
-
-// beforeEach(async () => {
-//   await Blog.deleteMany({});
-//   await Blog.insertMany(helper.initialList);
-//   await User.deleteMany({});
-//   await User.insertMany(helper.userList);
-// for (const blog of helper.initialList) {
-//   const blogObject = new Blog(blog);
-//   await blogObject.save();
-// }
-// await Promise.all(
-//   helper.initialList
-//     .map(async blog => new Blog(blog))
-//     .map(blog => blog.save())
-// );
-// });
+const bcrypt = require('bcrypt');
 
 describe('Blog tests', () => {
   beforeEach(async () => {
@@ -47,6 +32,13 @@ describe('Blog tests', () => {
   });
   describe('POST tests', () => {
     test('creates new post', async () => {
+      const user = {
+        username: 'Daawa',
+        password: 'password',
+      };
+      const res = await api.post('/api/login').send(user);
+      const token = res.body.token;
+
       const newPost = {
         title: 'Jest is really cool',
         author: 'Theo Leveque',
@@ -56,6 +48,7 @@ describe('Blog tests', () => {
 
       await api
         .post('/api/blogs')
+        .set('Authorization', `bearer ${token}`)
         .send(newPost)
         .expect(201)
         .expect('Content-Type', /application\/json/);
@@ -68,49 +61,89 @@ describe('Blog tests', () => {
     });
 
     test('no likes default to zero (0)', async () => {
+      const user = {
+        username: 'Daawa',
+        password: 'password',
+      };
+      const res = await api.post('/api/login').send(user);
+      const token = res.body.token;
       const newPost = {
         title: 'Jest is really cool',
         author: 'Theo Leveque',
         url: 'https://www.theoleveque.com',
       };
 
-      await api.post('/api/blogs').send(newPost);
+      await api
+        .post('/api/blogs')
+        .set('Authorization', `bearer ${token}`)
+        .send(newPost);
 
       const newPostInDb = await Blog.findOne({ title: 'Jest is really cool' });
       expect(newPostInDb.likes).toEqual(0);
     });
 
     test('no title and/or url returns 400 Bad Request', async () => {
+      const user = {
+        username: 'Daawa',
+        password: 'password',
+      };
+      const res = await api.post('/api/login').send(user);
+      const token = res.body.token;
       const newPost = {
         author: 'Wes Bos',
         likes: 35,
       };
 
-      await api.post('/api/blogs').send(newPost).expect(400);
+      await api
+        .post('/api/blogs')
+        .set('Authorization', `bearer ${token}`)
+        .send(newPost)
+        .expect(400);
+    });
+    test('adding blog fails with code 401 if token is not provided', async () => {
+      const newPost = {
+        title: 'Considered harmful sucks',
+        author: 'Scott Tolinski',
+        url: 'https://syntax.fm',
+        likes: 1609,
+      };
+
+      await api.post('/api/blogs').send(newPost).expect(401);
     });
   });
 
   describe('DELETE test', () => {
     test('deletes a note and return 204', async () => {
+      const user = {
+        username: 'Daawa',
+        password: 'password',
+      };
+      const loginRes = await api.post('/api/login').send(user);
+      const token = loginRes.body.token;
+      console.log(token);
       const res = await api.get('/api/blogs');
       const validId = res.body[0].id;
-      await api.delete(`/api/blogs/${validId}`).expect(204);
+      console.log(validId);
+      await api
+        .delete(`/api/blogs/${validId}`)
+        .set('Authorization', `bearer ${token}`)
+        .expect(204);
     });
   });
 
   describe('PUT test', () => {
-    test('updates a note', async () => {
+    test('updates a blog', async () => {
       const res = await api.get('/api/blogs');
       const validId = res.body[0].id;
 
-      const updatedNote = {
+      const updatedBlog = {
         title: 'Updating stuff is done with PUT',
         author: 'Lily',
         url: 'https://lilyloveleveque.dev',
         likes: 15,
       };
 
-      await api.put(`/api/blogs/${validId}`).send(updatedNote);
+      await api.put(`/api/blogs/${validId}`).send(updatedBlog);
 
       const postsAfterUpdate = await helper.notesInDb();
       expect(postsAfterUpdate).toHaveLength(helper.initialList.length);
@@ -121,12 +154,19 @@ describe('Blog tests', () => {
   });
 });
 
-describe('User tests', () => {
+xdescribe('User tests', () => {
   beforeEach(async () => {
     await User.deleteMany({});
-    await User.insertMany(helper.userList);
+    const passwordHash = await bcrypt.hash('password', 10);
+    for (const user of helper.userList) {
+      const userObj = new User({
+        username: user.username,
+        passwordHash,
+      });
+      await userObj.save();
+    }
   });
-  describe('POST tests', () => {
+  describe('POST user tests', () => {
     test('creates valid user', async () => {
       const newUser = {
         username: 'McLovin',
@@ -172,6 +212,21 @@ describe('User tests', () => {
       };
 
       await api.post('/api/users').send(invalidUser).expect(400);
+    });
+  });
+  describe('Post login tests', () => {
+    test('existing user can login', async () => {
+      const user = {
+        username: 'Daawa',
+        password: 'password',
+      };
+      const res = await api
+        .post('/api/login')
+        .send(user)
+        .expect(200)
+        .expect('Content-Type', /application\/json/);
+
+      console.log(res.body);
     });
   });
 });

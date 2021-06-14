@@ -1,6 +1,6 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImRhYXdhMiIsImlkIjoiNjBjNGUxMDlmYTViYTEwZWNkZTIyMGIyIiwiaWF0IjoxNjIzNTE1NzAyLCJleHAiOjE2MjM1MTkzMDJ9.bxJ_wPzeB9UMDEqtxbdTodLHGrCkmSgEZLcgzaGk3G8
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImRhYXdhMiIsImlkIjoiNjBjNGUxMDlmYTViYTEwZWNkZTIyMGIyIiwiaWF0IjoxNjIzNjkwNjI4LCJleHAiOjE2MjM2OTQyMjh9.v_sgYDPcH1g7nRYpEPozaaDdvJiqkaPieJefmZTSJCI
 
 {
   "title": "Bearer and user tokens from middleware test Post", 
