@@ -28,10 +28,19 @@ const update = async (blogObject, id) => {
   return res.data;
 };
 
+const deleteOne = async id => {
+  const config = {
+    headers: { Authorization: token },
+  };
+  const req = await axios.delete(`${baseUrl}/${id}`, config);
+  return req.data;
+};
+
 const blogService = {
   getAll,
   create,
   update,
+  deleteOne,
   setToken,
 };
 

@@ -1,9 +1,9 @@
 import { useState } from 'react';
 
-const Blog = ({ blog, addLike }) => {
+const Blog = ({ blog, addLike, deleteBlog }) => {
   const [areDetailsVisible, setAreDetailsVisible] = useState(false);
   const buttonLabel = areDetailsVisible ? 'hide' : 'view';
-  const handleClick = () => {
+  const showDetails = () => {
     setAreDetailsVisible(!areDetailsVisible);
   };
 
@@ -16,7 +16,7 @@ const Blog = ({ blog, addLike }) => {
   return (
     <li style={blogStyle}>
       {blog.title} {blog.author}
-      <button onClick={handleClick}>{buttonLabel}</button>
+      <button onClick={showDetails}>{buttonLabel}</button>
       {areDetailsVisible && (
         <ul>
           <li>{blog.url}</li>
@@ -25,6 +25,7 @@ const Blog = ({ blog, addLike }) => {
             <button onClick={() => addLike(blog.id)}>like</button>
           </li>
           <li>{blog.user.name}</li>
+          <button onClick={() => deleteBlog(blog.id)}>remove</button>
         </ul>
       )}
     </li>

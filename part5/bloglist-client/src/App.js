@@ -44,6 +44,30 @@ const App = () => {
     }
   };
 
+  const deleteBlog = async id => {
+    const blog = blogs.find(blog => blog.id === id);
+    const confirmation = window.confirm(
+      `Are you sure you want to delete ${blog.title}`
+    );
+    if (confirmation) {
+      try {
+        await blogService.deleteOne(id);
+        setBlogs(blogs.filter(blog => blog.id !== id));
+        setMessage(`The blog ${blog.title} was deleted`);
+        setTimeout(() => {
+          setMessage('');
+        }, 5000);
+      } catch (exception) {
+        setMessage(`${exception}`);
+        setTimeout(() => {
+          setMessage('');
+        }, 5000);
+      }
+    } else {
+      return;
+    }
+  };
+
   const addLike = async id => {
     const blog = blogs.find(blog => blog.id === id);
     const updatedBlog = {
@@ -109,13 +133,16 @@ const App = () => {
             <BlogForm createBlog={addBlog} user={user} />
           </Togglable>
           <ul>
-            {blogs.map(blog => (
-              <Blog
-                key={blog.id ? blog.id : blogs.length + 1}
-                blog={blog}
-                addLike={addLike}
-              />
-            ))}
+            {blogs
+              .sort((a, b) => b.likes - a.likes)
+              .map(blog => (
+                <Blog
+                  key={blog.id ? blog.id : blogs.length + 1}
+                  blog={blog}
+                  addLike={addLike}
+                  deleteBlog={deleteBlog}
+                />
+              ))}
           </ul>
         </>
       )}
