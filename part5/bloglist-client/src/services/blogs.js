@@ -20,9 +20,18 @@ const create = async newBlog => {
   return res.data;
 };
 
+const update = async (blogObject, id) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+  const res = await axios.put(`${baseUrl}/${id}`, blogObject, config);
+  return res.data;
+};
+
 const blogService = {
   getAll,
   create,
+  update,
   setToken,
 };
 
