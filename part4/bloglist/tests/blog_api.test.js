@@ -120,10 +120,8 @@ describe('Blog tests', () => {
       };
       const loginRes = await api.post('/api/login').send(user);
       const token = loginRes.body.token;
-      console.log(token);
       const res = await api.get('/api/blogs');
       const validId = res.body[0].id;
-      console.log(validId);
       await api
         .delete(`/api/blogs/${validId}`)
         .set('Authorization', `bearer ${token}`)

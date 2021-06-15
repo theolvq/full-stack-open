@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Blog from './components/Blog';
 import BlogForm from './components/BlogForm';
 import LoginForm from './components/LoginForm';
+import Notification from './components/Notification';
 import blogService from './services/blogs';
 import loginService from './services/login';
 
@@ -13,6 +14,7 @@ const App = () => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     blogService.getAll().then(initialList => setBlogs(initialList));
@@ -63,8 +65,15 @@ const App = () => {
       setTitle('');
       setAuthor('');
       setUrl('');
+      setMessage(`${newBlog.title} was added`);
+      setTimeout(() => {
+        setMessage('');
+      }, 5000);
     } catch (exception) {
-      console.log(exception);
+      setMessage(`${exception}`);
+      setTimeout(() => {
+        setMessage('');
+      }, 5000);
     }
   };
 
@@ -77,8 +86,15 @@ const App = () => {
       setUser(user);
       setUsername('');
       setPassword('');
+      setMessage('Thanks for logging in');
+      setTimeout(() => {
+        setMessage('');
+      }, 5000);
     } catch (exception) {
-      console.log('error', exception);
+      setMessage(`${exception}`);
+      setTimeout(() => {
+        setMessage('');
+      }, 5000);
     }
   };
 
@@ -86,11 +102,17 @@ const App = () => {
     window.localStorage.removeItem('loggedInBlogAppUser');
     setUser(null);
     blogService.setToken(null);
+    setMessage('You are now logged out');
+    setTimeout(() => {
+      setMessage('');
+    }, 5000);
   };
 
   return (
     <div>
       <h1>Blog List App</h1>
+      {message && <Notification message={message} />}
+
       {!user ? (
         <>
           <h2>Log in to the app</h2>

@@ -1,6 +1,7 @@
 const BlogForm = ({ title, author, url, handleChange, addBlog }) => {
   return (
     <form onSubmit={addBlog}>
+      <h2>Create New</h2>
       <label>
         title:
         <input type="text" value={title} name="title" onChange={handleChange} />

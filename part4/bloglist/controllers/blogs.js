@@ -21,7 +21,6 @@ blogRouter.post('/', async (req, res) => {
   const body = req.body;
   if (req.user) {
     const user = req.user;
-
     const blog = new Blog({
       title: body.title,
       author: body.author,
