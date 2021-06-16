@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 const LoginForm = ({ login }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     switch (name) {
       case 'username':
@@ -18,7 +18,7 @@ const LoginForm = ({ login }) => {
     }
   };
 
-  const handleLogin = e => {
+  const handleLogin = (e) => {
     e.preventDefault();
     login({ username, password });
     setUsername('');

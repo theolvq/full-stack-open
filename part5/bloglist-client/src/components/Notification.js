@@ -1,3 +1,5 @@
+import React from 'react';
+
 const Notification = ({ message }) => {
   const confirm = {
     border: '3px solid hsla(110, 66%, 47%, 1)',

@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 const BlogForm = ({ createBlog, user }) => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     switch (name) {
       case 'title':
@@ -22,7 +22,7 @@ const BlogForm = ({ createBlog, user }) => {
     }
   };
 
-  const addBlog = e => {
+  const addBlog = (e) => {
     e.preventDefault();
     createBlog({
       title,

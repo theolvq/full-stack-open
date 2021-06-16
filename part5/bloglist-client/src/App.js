@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Blog from './components/Blog';
 import BlogForm from './components/BlogForm';
 import LoginForm from './components/LoginForm';
@@ -13,9 +13,10 @@ const App = () => {
   const [message, setMessage] = useState('');
 
   const blogFormRef = useRef();
+  console.log('test');
 
   useEffect(() => {
-    blogService.getAll().then(initialList => setBlogs(initialList));
+    blogService.getAll().then((initialList) => setBlogs(initialList));
   }, []);
 
   useEffect(() => {
@@ -27,7 +28,7 @@ const App = () => {
     }
   }, []);
 
-  const addBlog = async newBlog => {
+  const addBlog = async (newBlog) => {
     blogFormRef.current.toggleVisibility();
     try {
       await blogService.create(newBlog);
@@ -44,15 +45,15 @@ const App = () => {
     }
   };
 
-  const deleteBlog = async id => {
-    const blog = blogs.find(blog => blog.id === id);
+  const deleteBlog = async (id) => {
+    const blog = blogs.find((blog) => blog.id === id);
     const confirmation = window.confirm(
       `Are you sure you want to delete ${blog.title}`
     );
     if (confirmation) {
       try {
         await blogService.deleteOne(id);
-        setBlogs(blogs.filter(blog => blog.id !== id));
+        setBlogs(blogs.filter((blog) => blog.id !== id));
         setMessage(`The blog ${blog.title} was deleted`);
         setTimeout(() => {
           setMessage('');
@@ -68,15 +69,15 @@ const App = () => {
     }
   };
 
-  const addLike = async id => {
-    const blog = blogs.find(blog => blog.id === id);
+  const addLike = async (id) => {
+    const blog = blogs.find((blog) => blog.id === id);
     const updatedBlog = {
       ...blog,
       likes: blog.likes + 1,
     };
     try {
       const res = await blogService.update(updatedBlog, id);
-      setBlogs(blogs.map(blog => (blog.id === id ? res : blog)));
+      setBlogs(blogs.map((blog) => (blog.id === id ? res : blog)));
     } catch (exception) {
       setMessage(`${exception}`);
       setTimeout(() => {
@@ -85,7 +86,7 @@ const App = () => {
     }
   };
 
-  const login = async userObject => {
+  const login = async (userObject) => {
     try {
       const user = await loginService.login(userObject);
       window.localStorage.setItem('loggedInBlogAppUser', JSON.stringify(user));
@@ -103,7 +104,7 @@ const App = () => {
     }
   };
 
-  const handleLogout = e => {
+  const handleLogout = () => {
     window.localStorage.removeItem('loggedInBlogAppUser');
     setUser(null);
     blogService.setToken(null);
@@ -135,7 +136,7 @@ const App = () => {
           <ul>
             {blogs
               .sort((a, b) => b.likes - a.likes)
-              .map(blog => (
+              .map((blog) => (
                 <Blog
                   key={blog.id ? blog.id : blogs.length + 1}
                   blog={blog}
