@@ -16,13 +16,17 @@ const Blog = ({ blog, addLike, deleteBlog }) => {
   return (
     <li style={blogStyle}>
       {blog.title} {blog.author}
-      <button onClick={showDetails}>{buttonLabel}</button>
+      <button className="details" onClick={showDetails}>
+        {buttonLabel}
+      </button>
       {areDetailsVisible && (
         <ul>
           <li>{blog.url}</li>
           <li>
             {blog.likes}
-            <button onClick={() => addLike(blog.id)}>like</button>
+            <button className="like" onClick={() => addLike(blog.id)}>
+              like
+            </button>
           </li>
           <li>{blog.user.name}</li>
           <button onClick={() => deleteBlog(blog.id)}>remove</button>
