@@ -34,6 +34,7 @@ const LoginForm = ({ login }) => {
           value={username}
           name="username"
           onChange={handleChange}
+          id="username"
         />
       </label>
       <label>
@@ -43,9 +44,12 @@ const LoginForm = ({ login }) => {
           value={password}
           name="password"
           onChange={handleChange}
+          id="password"
         />
       </label>
-      <button type="submit">Login</button>
+      <button id="login-btn" type="submit">
+        Login
+      </button>
     </form>
   );
 };

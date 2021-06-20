@@ -15,7 +15,10 @@ const Notification = ({ message }) => {
     color: '#fcd1e2',
   };
   return (
-    <div style={message.toLowerCase().includes('error') ? error : confirm}>
+    <div
+      className="notification"
+      style={message.toLowerCase().includes('error') ? error : confirm}
+    >
       <p>{message}</p>
     </div>
   );

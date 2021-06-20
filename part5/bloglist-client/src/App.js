@@ -13,7 +13,6 @@ const App = () => {
   const [message, setMessage] = useState('');
 
   const blogFormRef = useRef();
-  console.log('test');
 
   useEffect(() => {
     blogService.getAll().then((initialList) => setBlogs(initialList));
@@ -122,18 +121,20 @@ const App = () => {
       {!user ? (
         <>
           <h2>Log in to the app</h2>
-          <Togglable buttonLabel="Log in">
+          <Togglable buttonLabel="Login">
             <LoginForm login={login} />
           </Togglable>
         </>
       ) : (
         <>
           <h2>{user.name} is logged in</h2>
-          <button onClick={handleLogout}>Log out</button>
+          <button id="logout-btn" onClick={handleLogout}>
+            Log out
+          </button>
           <Togglable buttonLabel="Create New Blog" ref={blogFormRef}>
             <BlogForm createBlog={addBlog} user={user} />
           </Togglable>
-          <ul>
+          <ul className="bloglist">
             {blogs
               .sort((a, b) => b.likes - a.likes)
               .map((blog) => (
