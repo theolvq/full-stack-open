@@ -79,7 +79,7 @@ describe('Blog app', function () {
         'The blog Cypress kicks asses! was deleted'
       );
     });
-    it.only('fails when another user try to delete a blog', function () {
+    it('fails when another user try to delete a blog', function () {
       cy.createBlog({
         title: 'please fail',
         author: 'McLovin',
@@ -103,7 +103,7 @@ describe('Blog app', function () {
       cy.get('.notification').should('contain', '401');
     });
   });
-  describe('when there are multiple blogs', () => {
+  describe.only('when there are multiple blogs', () => {
     beforeEach(function () {
       cy.login({ username: 'daawa', password: 'whistler' });
       cy.createBlog({
@@ -126,7 +126,61 @@ describe('Blog app', function () {
         author: 'Theo Leveque',
         url: 'fullstackopen.com',
       });
+      cy.contains('Cypress is actually awesome')
+        .children('.details')
+        .click()
+        .siblings('.blog-details')
+        .children('.like')
+        .children('.like-btn')
+        .click()
+        .wait(75);
+      cy.contains('Cypress is just the best')
+        .children('.details')
+        .click()
+        .siblings('.blog-details')
+        .children('.like')
+        .children('.like-btn')
+        .click()
+        .wait(75)
+        .click()
+        .wait(75)
+        .click()
+        .wait(75)
+        .click()
+        .wait(75);
+      cy.contains('Cypress is pretty neat')
+        .children('.details')
+        .click()
+        .siblings('.blog-details')
+        .children('.like')
+        .children('.like-btn')
+        .click()
+        .wait(75)
+        .click()
+        .wait(75);
+      cy.contains('Cypress is very useful')
+        .children('.details')
+        .click()
+        .siblings('.blog-details')
+        .children('.like')
+        .children('.like-btn')
+        .click()
+        .wait(75)
+        .click()
+        .wait(75)
+        .click()
+        .wait(75);
     });
-    it('blogs are ordered per like', function () {});
+    it('blogs are ordered per like', function () {
+      cy.get('.like').then((likes) =>
+        likes.map((i, el) => {
+          if (likes[i + 1]) {
+            expect(Number(el.firstChild.data)).to.be.gt(
+              Number(likes[i + 1].firstChild.data)
+            );
+          }
+        })
+      );
+    });
   });
 });

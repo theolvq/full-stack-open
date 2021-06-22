@@ -20,11 +20,11 @@ const Blog = ({ blog, addLike, deleteBlog }) => {
         {buttonLabel}
       </button>
       {areDetailsVisible && (
-        <ul>
+        <ul className="blog-details">
           <li>{blog.url}</li>
-          <li>
+          <li className="like">
             {blog.likes}
-            <button className="like" onClick={() => addLike(blog.id)}>
+            <button className="like-btn" onClick={() => addLike(blog.id)}>
               like
             </button>
           </li>
