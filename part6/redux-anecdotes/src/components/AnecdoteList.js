@@ -9,9 +9,13 @@ const AnecdoteList = () => {
   const anecdotes = useSelector(state =>
     state.anecdotes
       .sort((a, b) => b.votes - a.votes)
-      .filter(anecdote => anecdote.content.toLowerCase().includes(state.filter))
+      .filter(anecdote =>
+        anecdote.content
+          ? anecdote.content.toLowerCase().includes(state.filter)
+          : null
+      )
   );
-
+  console.log(anecdotes);
   const dispatch = useDispatch();
 
   const vote = (id, content) => {
