@@ -1,9 +1,9 @@
-const initialMessage = 'Welcome!';
-
-const notificationReducer = (state = initialMessage, action) => {
+const notificationReducer = (state = null, action) => {
   switch (action.type) {
-    case 'NOTIF':
-      return [...state, action.message];
+    case 'CREATE':
+      return action.message;
+    case 'DELETE':
+      return action.message;
     default:
       return state;
   }
@@ -11,8 +11,15 @@ const notificationReducer = (state = initialMessage, action) => {
 
 export const createNotification = message => {
   return {
-    type: 'NOTIF',
+    type: 'CREATE',
     message,
+  };
+};
+
+export const deleteNotification = () => {
+  return {
+    type: 'DELETE',
+    message: '',
   };
 };
 
