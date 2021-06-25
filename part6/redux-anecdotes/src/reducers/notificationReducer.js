@@ -1,25 +1,27 @@
 const notificationReducer = (state = null, action) => {
   switch (action.type) {
-    case 'CREATE':
-      return action.message;
-    case 'DELETE':
-      return action.message;
+    case 'SET':
+      return action.data;
+    case 'UNSET':
+      return action.data;
+
     default:
       return state;
   }
 };
 
-export const createNotification = message => {
-  return {
-    type: 'CREATE',
-    message,
-  };
-};
-
-export const deleteNotification = () => {
-  return {
-    type: 'DELETE',
-    message: '',
+export const setNotification = (message, time) => {
+  return dispatch => {
+    dispatch({
+      type: 'SET',
+      data: message,
+    });
+    setTimeout(() => {
+      dispatch({
+        type: 'UNSET',
+        data: '',
+      });
+    }, time * 1000);
   };
 };
 
