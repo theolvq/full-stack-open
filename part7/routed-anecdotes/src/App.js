@@ -4,7 +4,8 @@ import About from './components/About';
 import CreateNew from './components/CreateNew';
 import Footer from './components/Footer';
 import Anecdote from './components/Anecdote';
-import { Route, Switch, useRouteMatch } from 'react-router';
+import Notification from './components/Notification';
+import { Route, Switch, useHistory, useRouteMatch } from 'react-router';
 import Menu from './components/Menu';
 
 const App = () => {
@@ -31,10 +32,17 @@ const App = () => {
   const anecdote = match
     ? anecdotes.find(anecdote => anecdote.id === match.params.id)
     : null;
-  console.log(anecdotes.map(anecdote => anecdote.id));
+
+  const history = useHistory();
+
   const addNew = anecdote => {
     anecdote.id = (Math.random() * 10000).toFixed(0);
     setAnecdotes(anecdotes.concat(anecdote));
+    setNotification(`a new anecdote ${anecdote.content} created`);
+    setTimeout(() => {
+      setNotification('');
+    }, 10000);
+    history.push('/');
   };
 
   const anecdoteById = id => anecdotes.find(a => a.id === id);
@@ -54,6 +62,7 @@ const App = () => {
     <div>
       <h1>Software anecdotes</h1>
       <Menu />
+      {notification && <Notification message={notification} />}
       <Switch>
         <Route exact path='/'>
           <AnecdoteList anecdotes={anecdotes} />
