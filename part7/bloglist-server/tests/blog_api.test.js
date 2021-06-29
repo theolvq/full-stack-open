@@ -14,7 +14,7 @@ describe('Blog tests', () => {
     await Blog.insertMany(helper.initialList);
   });
 
-  describe('GET tests', () => {
+  xdescribe('GET tests', () => {
     test('notes are returned as json', async () => {
       await api
         .get('/api/blogs')
@@ -31,15 +31,17 @@ describe('Blog tests', () => {
       expect(id).toBeDefined();
     });
   });
-  describe('POST tests', () => {
-    test('creates new post', async () => {
+  xdescribe('POST tests', () => {
+    let token;
+    beforeEach(async () => {
       const user = {
         username: 'Daawa',
         password: 'password',
       };
       const res = await api.post('/api/login').send(user);
-      const { token } = res.body;
-
+      token = res.body.token;
+    });
+    test('creates new post', async () => {
       const newPost = {
         title: 'Jest is really cool',
         author: 'Theo Leveque',
@@ -62,12 +64,6 @@ describe('Blog tests', () => {
     });
 
     test('no likes default to zero (0)', async () => {
-      const user = {
-        username: 'Daawa',
-        password: 'password',
-      };
-      const res = await api.post('/api/login').send(user);
-      const { token } = res.body;
       const newPost = {
         title: 'Jest is really cool',
         author: 'Theo Leveque',
@@ -84,12 +80,6 @@ describe('Blog tests', () => {
     });
 
     test('no title and/or url returns 400 Bad Request', async () => {
-      const user = {
-        username: 'Daawa',
-        password: 'password',
-      };
-      const res = await api.post('/api/login').send(user);
-      const { token } = res.body;
       const newPost = {
         author: 'Wes Bos',
         likes: 35,
@@ -114,15 +104,19 @@ describe('Blog tests', () => {
   });
 
   describe('DELETE test', () => {
-    test('deletes a note and return 204', async () => {
+    let token;
+    beforeEach(async () => {
       const user = {
         username: 'Daawa',
         password: 'password',
       };
-      const loginRes = await api.post('/api/login').send(user);
-      const { token } = loginRes.body;
+      const res = await api.post('/api/login').send(user);
+      token = res.body.token;
+    });
+    test('deletes a note and return 204', async () => {
       const res = await api.get('/api/blogs');
       const validId = res.body[0].id;
+      console.log(validId);
       await api
         .delete(`/api/blogs/${validId}`)
         .set('Authorization', `bearer ${token}`)
@@ -130,7 +124,7 @@ describe('Blog tests', () => {
     });
   });
 
-  describe('PUT test', () => {
+  xdescribe('PUT test', () => {
     test('updates a blog', async () => {
       const res = await api.get('/api/blogs');
       const validId = res.body[0].id;
