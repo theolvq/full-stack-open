@@ -1,12 +1,13 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { createBlog } from '../actions/blogActions';
 import {
   setNotification,
   unsetNotification,
 } from '../actions/notificationActions';
 
-const BlogForm = ({ user }) => {
+const BlogForm = () => {
+  const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   const addBlog = (e) => {

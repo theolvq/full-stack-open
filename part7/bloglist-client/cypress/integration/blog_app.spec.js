@@ -103,7 +103,7 @@ describe('Blog app', function () {
       cy.get('.notification').should('contain', '401');
     });
   });
-  describe.only('when there are multiple blogs', () => {
+  describe('when there are multiple blogs', () => {
     beforeEach(function () {
       cy.login({ username: 'daawa', password: 'whistler' });
       cy.createBlog({

@@ -1,51 +1,46 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useDispatch } from 'react-redux';
+import { login, setUser } from '../actions/userAction';
+import {
+  setNotification,
+  unsetNotification,
+} from '../actions/notificationActions';
 
-const LoginForm = ({ login }) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+const LoginForm = () => {
+  const dispatch = useDispatch();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    switch (name) {
-      case 'username':
-        setUsername(value);
-        break;
-      case 'password':
-        setPassword(value);
-        break;
-      default:
-        return;
-    }
-  };
-
-  const handleLogin = (e) => {
+  const logUser = (e) => {
     e.preventDefault();
-    login({ username, password });
-    setUsername('');
-    setPassword('');
+    const username = e.target.username.value;
+    const password = e.target.password.value;
+
+    try {
+      dispatch(login({ username, password }));
+      dispatch(setUser({ username, password }));
+      dispatch(setNotification(`${username} just logged in`));
+      setTimeout(() => {
+        dispatch(unsetNotification());
+      }, 5000);
+    } catch (exception) {
+      console.log(exception);
+      dispatch(setNotification(`${exception}`));
+      setTimeout(() => {
+        dispatch(unsetNotification());
+      }, 5000);
+    }
+    e.target.username.value = '';
+    e.target.password.value = '';
   };
 
   return (
-    <form onSubmit={handleLogin}>
+    <form onSubmit={logUser}>
       <label>
         username:
-        <input
-          type="text"
-          value={username}
-          name="username"
-          onChange={handleChange}
-          id="username"
-        />
+        <input type="text" name="username" id="username" />
       </label>
       <label>
         password:
-        <input
-          type="password"
-          value={password}
-          name="password"
-          onChange={handleChange}
-          id="password"
-        />
+        <input type="password" name="password" id="password" />
       </label>
       <button id="login-btn" type="submit">
         Login

@@ -1,13 +1,13 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import BlogForm from './components/BlogForm';
 import LoginForm from './components/LoginForm';
 import Notification from './components/Notification';
 import Togglable from './components/Togglable';
 import blogService from './services/blogs';
-import loginService from './services/login';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { initBloglist } from './actions/blogActions';
 import BlogList from './components/BlogList';
+import { setUser, unsetUser } from './actions/userAction';
 import {
   setNotification,
   unsetNotification,
@@ -15,7 +15,7 @@ import {
 
 const App = () => {
   const dispatch = useDispatch();
-  const [user, setUser] = useState(null);
+  const user = useSelector((state) => state.user);
 
   const blogFormRef = useRef();
 
@@ -26,38 +26,19 @@ const App = () => {
   useEffect(() => {
     const loggedInUserJSON = window.localStorage.getItem('loggedInBlogAppUser');
     if (loggedInUserJSON) {
-      const user = JSON.parse(loggedInUserJSON);
-      setUser(user);
-      blogService.setToken(user.token);
+      const loggedInUser = JSON.parse(loggedInUserJSON);
+      dispatch(setUser(loggedInUser));
+      blogService.setToken(loggedInUser.token);
     }
   }, []);
 
-  const login = async (userObject) => {
-    try {
-      const user = await loginService.login(userObject);
-      window.localStorage.setItem('loggedInBlogAppUser', JSON.stringify(user));
-      blogService.setToken(user.token);
-      setUser(user);
-      dispatch(setNotification(`${user.username} just logged in`));
-      setTimeout(() => {
-        unsetNotification();
-      }, 5000);
-    } catch (exception) {
-      console.log(exception);
-      setNotification(`${exception}`);
-      setTimeout(() => {
-        unsetNotification();
-      }, 5000);
-    }
-  };
-
   const handleLogout = () => {
     window.localStorage.removeItem('loggedInBlogAppUser');
-    setUser(null);
+    dispatch(unsetUser());
     blogService.setToken(null);
     dispatch(setNotification(`${user.username} just logged out`));
     setTimeout(() => {
-      unsetNotification();
+      dispatch(unsetNotification());
     }, 5000);
   };
 
@@ -65,12 +46,11 @@ const App = () => {
     <div>
       <h1>Blog List App</h1>
       <Notification />
-
       {!user ? (
         <>
           <h2>Log in to the app</h2>
           <Togglable buttonLabel="Login">
-            <LoginForm login={login} />
+            <LoginForm />
           </Togglable>
         </>
       ) : (
@@ -80,7 +60,7 @@ const App = () => {
             Log out
           </button>
           <Togglable buttonLabel="Create New Blog" ref={blogFormRef}>
-            <BlogForm user={user} />
+            <BlogForm />
           </Togglable>
           <BlogList />
         </>
