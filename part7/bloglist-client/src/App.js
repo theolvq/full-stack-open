@@ -1,13 +1,17 @@
 import React, { useEffect, useState, useRef } from 'react';
-import Blog from './components/Blog';
+// import Blog from './components/Blog';
 import BlogForm from './components/BlogForm';
 import LoginForm from './components/LoginForm';
 import Notification from './components/Notification';
 import Togglable from './components/Togglable';
 import blogService from './services/blogs';
 import loginService from './services/login';
+import { useDispatch } from 'react-redux';
+import { initBloglist } from './actions/blogActions';
+import BlogList from './components/BlogList';
 
 const App = () => {
+  const dispatch = useDispatch();
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
   const [message, setMessage] = useState('');
@@ -15,8 +19,8 @@ const App = () => {
   const blogFormRef = useRef();
 
   useEffect(() => {
-    blogService.getAll().then((initialList) => setBlogs(initialList));
-  }, []);
+    dispatch(initBloglist());
+  }, [dispatch]);
 
   useEffect(() => {
     const loggedInUserJSON = window.localStorage.getItem('loggedInBlogAppUser');
@@ -36,47 +40,6 @@ const App = () => {
       setTimeout(() => {
         setMessage('');
       }, 5000);
-    } catch (exception) {
-      setMessage(`${exception}`);
-      setTimeout(() => {
-        setMessage('');
-      }, 5000);
-    }
-  };
-
-  const deleteBlog = async (id) => {
-    const blog = blogs.find((blog) => blog.id === id);
-    const confirmation = window.confirm(
-      `Are you sure you want to delete ${blog.title}`
-    );
-    if (confirmation) {
-      try {
-        await blogService.deleteOne(id);
-        setBlogs(blogs.filter((blog) => blog.id !== id));
-        setMessage(`The blog ${blog.title} was deleted`);
-        setTimeout(() => {
-          setMessage('');
-        }, 5000);
-      } catch (exception) {
-        setMessage(`${exception}`);
-        setTimeout(() => {
-          setMessage('');
-        }, 5000);
-      }
-    } else {
-      return;
-    }
-  };
-
-  const addLike = async (id) => {
-    const blog = blogs.find((blog) => blog.id === id);
-    const updatedBlog = {
-      ...blog,
-      likes: blog.likes + 1,
-    };
-    try {
-      const res = await blogService.update(updatedBlog, id);
-      setBlogs(blogs.map((blog) => (blog.id === id ? res : blog)));
     } catch (exception) {
       setMessage(`${exception}`);
       setTimeout(() => {
@@ -134,18 +97,7 @@ const App = () => {
           <Togglable buttonLabel="Create New Blog" ref={blogFormRef}>
             <BlogForm createBlog={addBlog} user={user} />
           </Togglable>
-          <ul className="bloglist">
-            {blogs
-              .sort((a, b) => b.likes - a.likes)
-              .map((blog) => (
-                <Blog
-                  key={blog.id ? blog.id : blogs.length + 1}
-                  blog={blog}
-                  addLike={addLike}
-                  deleteBlog={deleteBlog}
-                />
-              ))}
-          </ul>
+          <BlogList />
         </>
       )}
     </div>

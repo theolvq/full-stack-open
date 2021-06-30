@@ -20,19 +20,20 @@ const create = async (newBlog) => {
   return res.data;
 };
 
-const update = async (blogObject, id) => {
+const update = async (id, blogObject) => {
   const config = {
     headers: { Authorization: token },
   };
+
   const res = await axios.put(`${baseUrl}/${id}`, blogObject, config);
   return res.data;
 };
 
 const deleteOne = async (id) => {
-  const config = {
-    headers: { Authorization: token },
-  };
-  const req = await axios.delete(`${baseUrl}/${id}`, config);
+  // const config = {
+  //   headers: { Authorization: token },
+  // };
+  const req = await axios.delete(`${baseUrl}/${id}`);
   return req.data;
 };
 
