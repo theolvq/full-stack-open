@@ -1,42 +1,24 @@
-import React, { useState } from 'react';
-// import { useDispatch } from 'react-redux';
+import React from 'react';
+import { useDispatch } from 'react-redux';
+import { createBlog } from '../actions/blogActions';
 
-const BlogForm = ({ createBlog, user }) => {
-  // const dispatch = useDispatch();
-
-  const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [url, setUrl] = useState('');
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    switch (name) {
-      case 'title':
-        setTitle(value);
-        break;
-      case 'author':
-        setAuthor(value);
-        break;
-      case 'url':
-        setUrl(value);
-        break;
-      default:
-        return;
-    }
-  };
+const BlogForm = ({ user }) => {
+  const dispatch = useDispatch();
 
   const addBlog = (e) => {
     e.preventDefault();
-    createBlog({
-      title,
-      author,
-      url,
-      likes: 0,
-      user,
-    });
-    setTitle('');
-    setAuthor('');
-    setUrl('');
+    const title = e.target.title.value;
+    const author = e.target.author.value;
+    const url = e.target.url.value;
+    dispatch(
+      createBlog({
+        title,
+        author,
+        url,
+        likes: 0,
+        user,
+      })
+    );
   };
 
   return (
@@ -44,33 +26,15 @@ const BlogForm = ({ createBlog, user }) => {
       <h2>Create New</h2>
       <label>
         title:
-        <input
-          type="text"
-          value={title}
-          name="title"
-          onChange={handleChange}
-          id="title"
-        />
+        <input type="text" name="title" id="title" />
       </label>
       <label>
         author:
-        <input
-          type="text"
-          value={author}
-          name="author"
-          onChange={handleChange}
-          id="author"
-        />
+        <input type="text" name="author" id="author" />
       </label>
       <label>
         url:
-        <input
-          type="text"
-          value={url}
-          name="url"
-          onChange={handleChange}
-          id="url"
-        />
+        <input type="text" name="url" id="url" />
       </label>
       <button id="submit-btn" type="submit">
         Add
