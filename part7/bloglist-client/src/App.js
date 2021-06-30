@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from 'react';
-// import Blog from './components/Blog';
 import BlogForm from './components/BlogForm';
 import LoginForm from './components/LoginForm';
 import Notification from './components/Notification';
@@ -9,12 +8,14 @@ import loginService from './services/login';
 import { useDispatch } from 'react-redux';
 import { initBloglist } from './actions/blogActions';
 import BlogList from './components/BlogList';
+import {
+  setNotification,
+  unsetNotification,
+} from './actions/notificationActions';
 
 const App = () => {
   const dispatch = useDispatch();
-  const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
-  const [message, setMessage] = useState('');
 
   const blogFormRef = useRef();
 
@@ -31,37 +32,21 @@ const App = () => {
     }
   }, []);
 
-  const addBlog = async (newBlog) => {
-    blogFormRef.current.toggleVisibility();
-    try {
-      await blogService.create(newBlog);
-      setBlogs(blogs.concat(newBlog));
-      setMessage(`${newBlog.title} was added`);
-      setTimeout(() => {
-        setMessage('');
-      }, 5000);
-    } catch (exception) {
-      setMessage(`${exception}`);
-      setTimeout(() => {
-        setMessage('');
-      }, 5000);
-    }
-  };
-
   const login = async (userObject) => {
     try {
       const user = await loginService.login(userObject);
       window.localStorage.setItem('loggedInBlogAppUser', JSON.stringify(user));
       blogService.setToken(user.token);
       setUser(user);
-      setMessage('Thanks for logging in');
+      dispatch(setNotification(`${user.username} just logged in`));
       setTimeout(() => {
-        setMessage('');
+        unsetNotification();
       }, 5000);
     } catch (exception) {
-      setMessage(`${exception}`);
+      console.log(exception);
+      setNotification(`${exception}`);
       setTimeout(() => {
-        setMessage('');
+        unsetNotification();
       }, 5000);
     }
   };
@@ -70,16 +55,16 @@ const App = () => {
     window.localStorage.removeItem('loggedInBlogAppUser');
     setUser(null);
     blogService.setToken(null);
-    setMessage('You are now logged out');
+    dispatch(setNotification(`${user.username} just logged out`));
     setTimeout(() => {
-      setMessage('');
+      unsetNotification();
     }, 5000);
   };
 
   return (
     <div>
       <h1>Blog List App</h1>
-      {message && <Notification message={message} />}
+      <Notification />
 
       {!user ? (
         <>
@@ -95,7 +80,7 @@ const App = () => {
             Log out
           </button>
           <Togglable buttonLabel="Create New Blog" ref={blogFormRef}>
-            <BlogForm createBlog={addBlog} user={user} />
+            <BlogForm user={user} />
           </Togglable>
           <BlogList />
         </>

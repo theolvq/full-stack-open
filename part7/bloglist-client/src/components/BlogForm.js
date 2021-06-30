@@ -1,6 +1,10 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { createBlog } from '../actions/blogActions';
+import {
+  setNotification,
+  unsetNotification,
+} from '../actions/notificationActions';
 
 const BlogForm = ({ user }) => {
   const dispatch = useDispatch();
@@ -19,6 +23,15 @@ const BlogForm = ({ user }) => {
         user,
       })
     );
+    dispatch(
+      setNotification(`You added ${title} by ${author} to the bloglist`)
+    );
+    setTimeout(() => {
+      dispatch(unsetNotification());
+    }, 5000);
+    e.target.title.value = '';
+    e.target.author.value = '';
+    e.target.url.value = '';
   };
 
   return (
