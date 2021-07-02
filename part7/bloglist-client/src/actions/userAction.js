@@ -7,13 +7,17 @@ export const SETUSER = 'SETUSER';
 export const UNSETUSER = 'UNSETUSER';
 
 export const login = (userObject) => async (dispatch) => {
-  const user = await loginService.login(userObject);
-  window.localStorage.setItem('loggedInBlogAppUser', JSON.stringify(user));
-  blogService.setToken(user.token);
-  dispatch({
-    type: LOGIN,
-    data: user,
-  });
+  try {
+    const user = await loginService.login(userObject);
+    window.localStorage.setItem('loggedInBlogAppUser', JSON.stringify(user));
+    blogService.setToken(user.token);
+    dispatch({
+      type: LOGIN,
+      data: user,
+    });
+  } catch (exception) {
+    console.log(exception);
+  }
 };
 
 export const logout = () => ({

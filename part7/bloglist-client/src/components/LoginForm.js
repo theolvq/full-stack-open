@@ -23,7 +23,7 @@ const LoginForm = () => {
       }, 5000);
     } catch (exception) {
       console.log(exception);
-      dispatch(setNotification(`${exception}`));
+      dispatch(setNotification(`Error: ${exception}`));
       setTimeout(() => {
         dispatch(unsetNotification());
       }, 5000);

@@ -26,6 +26,7 @@ const App = () => {
   useEffect(() => {
     const loggedInUserJSON = window.localStorage.getItem('loggedInBlogAppUser');
     if (loggedInUserJSON) {
+      console.log(loggedInUserJSON);
       const loggedInUser = JSON.parse(loggedInUserJSON);
       dispatch(setUser(loggedInUser));
       blogService.setToken(loggedInUser.token);

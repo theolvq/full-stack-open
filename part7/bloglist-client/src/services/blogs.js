@@ -8,16 +8,24 @@ const setToken = (newToken) => {
 };
 
 const getAll = async () => {
-  const res = await axios.get(baseUrl);
-  return res.data;
+  try {
+    const res = await axios.get(baseUrl);
+    return res.data;
+  } catch (exception) {
+    console.log(exception);
+  }
 };
 
 const create = async (newBlog) => {
   const config = {
     headers: { Authorization: token },
   };
-  const res = await axios.post(baseUrl, newBlog, config);
-  return res.data;
+  try {
+    const res = await axios.post(baseUrl, newBlog, config);
+    return res.data;
+  } catch (exception) {
+    console.log(exception);
+  }
 };
 
 const update = async (id, blogObject) => {
@@ -25,16 +33,24 @@ const update = async (id, blogObject) => {
     headers: { Authorization: token },
   };
 
-  const res = await axios.put(`${baseUrl}/${id}`, blogObject, config);
-  return res.data;
+  try {
+    const res = await axios.put(`${baseUrl}/${id}`, blogObject, config);
+    return res.data;
+  } catch (exception) {
+    console.log(exception);
+  }
 };
 
 const deleteOne = async (id) => {
   // const config = {
   //   headers: { Authorization: token },
   // };
-  const req = await axios.delete(`${baseUrl}/${id}`);
-  return req.data;
+  try {
+    const req = await axios.delete(`${baseUrl}/${id}`);
+    return req.data;
+  } catch (exception) {
+    console.log(exception);
+  }
 };
 
 const blogService = {

@@ -2,9 +2,9 @@ describe('Blog app', function () {
   beforeEach(function () {
     cy.request('POST', 'http://localhost:3003/api/testing/reset');
     const user = {
-      name: 'Theo',
-      username: 'daawa',
-      password: 'whistler',
+      name: 'name',
+      username: 'username',
+      password: 'password',
     };
     cy.request({
       url: 'http://localhost:3003/api/users',
@@ -13,24 +13,22 @@ describe('Blog app', function () {
     });
     cy.visit('http://localhost:3000');
   });
-  it('login form can be opened', function () {
-    cy.contains('Log in').click();
-  });
   describe('can login', function () {
     it('succeeds with correct credentials', function () {
       cy.contains('Login').click();
-      cy.get('#username').type('daawa');
-      cy.get('#password').type('whistler');
+      cy.get('#username').type('username');
+      cy.get('#password').type('password');
       cy.get('#login-btn').click();
-      cy.contains('Theo is logged in');
+      cy.contains('username just logged in');
     });
     it('fails with invalid credentials', function () {
+      cy.contains('Log out').click();
       cy.contains('Login').click();
-      cy.get('#username').type('daawa');
-      cy.get('#password').type('vancouver');
+      cy.get('#username').type('username');
+      cy.get('#password').type('wrong');
       cy.get('#login-btn').click();
 
-      cy.get('html').should('not.contain', 'Theo is logged in');
+      // cy.get('html').should('not.contain', 'username just logged in');
 
       cy.get('.notification')
         .should('contain', 'Error')
