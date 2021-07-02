@@ -51,17 +51,19 @@ blogRouter.put('/:id', async (req, res) => {
 });
 
 blogRouter.delete('/:id', async (req, res) => {
-  const blog = await Blog.findById(req.params.id);
-  if (req.user) {
-    const { user } = req;
-    if (blog.user.id.toString() === user._id.toString()) {
-      console.log(blog.user, user._id);
-      await Blog.findByIdAndDelete(req.params.id);
-      res.status(204).end();
-    } else {
-      res.status(401).end();
-    }
-  }
+  // const blog = await Blog.findById(req.params.id);
+  await Blog.findByIdAndDelete(req.params.id);
+  res.status(204).end();
+  // if (req.user) {
+  //   const { user } = req;
+  //   if (blog.user.toString() === user._id.toString()) {
+  //     console.log(blog.user, user._id);
+  //     await Blog.findByIdAndDelete(req.params.id);
+  //     res.status(204).end();
+  //   } else {
+  //     res.status(401).end();
+  //   }
+  // }
 });
 
 module.exports = blogRouter;

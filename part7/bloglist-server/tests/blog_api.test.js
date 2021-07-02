@@ -14,7 +14,7 @@ describe('Blog tests', () => {
     await Blog.insertMany(helper.initialList);
   });
 
-  xdescribe('GET tests', () => {
+  describe('GET tests', () => {
     test('notes are returned as json', async () => {
       await api
         .get('/api/blogs')
@@ -31,7 +31,7 @@ describe('Blog tests', () => {
       expect(id).toBeDefined();
     });
   });
-  xdescribe('POST tests', () => {
+  describe('POST tests', () => {
     let token;
     beforeEach(async () => {
       const user = {
@@ -40,6 +40,7 @@ describe('Blog tests', () => {
       };
       const res = await api.post('/api/login').send(user);
       token = res.body.token;
+      console.log(res.body);
     });
     test('creates new post', async () => {
       const newPost = {
@@ -113,7 +114,7 @@ describe('Blog tests', () => {
       const res = await api.post('/api/login').send(user);
       token = res.body.token;
     });
-    test('deletes a note and return 204', async () => {
+    test('deletes a blog post and return 204', async () => {
       const res = await api.get('/api/blogs');
       const validId = res.body[0].id;
       console.log(validId);
@@ -124,7 +125,7 @@ describe('Blog tests', () => {
     });
   });
 
-  xdescribe('PUT test', () => {
+  describe('PUT test', () => {
     test('updates a blog', async () => {
       const res = await api.get('/api/blogs');
       const validId = res.body[0].id;
@@ -147,7 +148,7 @@ describe('Blog tests', () => {
   });
 });
 
-xdescribe('User tests', () => {
+describe('User tests', () => {
   beforeEach(async () => {
     await User.deleteMany({});
     const passwordHash = await bcrypt.hash('password', 10);
@@ -220,6 +221,13 @@ xdescribe('User tests', () => {
         .send(user)
         .expect(200)
         .expect('Content-Type', /application\/json/);
+    });
+    test("non-existing user can't login", async () => {
+      const user = {
+        username: 'Daawa',
+        password: 'wrongpassword',
+      };
+      await api.post('/api/login').send(user).expect(401);
     });
   });
 });

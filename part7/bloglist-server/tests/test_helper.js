@@ -60,7 +60,7 @@ const initialList = [
 
 const notesInDb = async () => {
   const posts = await Blog.find({});
-  return posts.map(post => post.toJSON());
+  return posts.map((post) => post.toJSON());
 };
 
 const userList = [
@@ -78,7 +78,7 @@ const userList = [
 
 const usersInDb = async () => {
   const users = await User.find({});
-  return users.map(user => user.toJSON());
+  return users.map((user) => user.toJSON());
 };
 
 module.exports = {
