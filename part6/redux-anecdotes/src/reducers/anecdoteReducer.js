@@ -24,7 +24,6 @@ const anecdoteReducer = (state = [], action) => {
 export const voteAnecdote = (id, anecdote) => {
   return async dispatch => {
     const newAnecdote = await anecdoteService.update(id, anecdote);
-    console.log(newAnecdote);
     dispatch({
       type: 'VOTE',
       data: newAnecdote,
