@@ -12,6 +12,8 @@ import {
   setNotification,
   unsetNotification,
 } from './actions/notificationActions';
+import Users from './components/Users';
+import { getThemAll } from './actions/usersAction';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -21,12 +23,12 @@ const App = () => {
 
   useEffect(() => {
     dispatch(initBloglist());
+    dispatch(getThemAll());
   }, [dispatch]);
 
   useEffect(() => {
     const loggedInUserJSON = window.localStorage.getItem('loggedInBlogAppUser');
     if (loggedInUserJSON) {
-      console.log(loggedInUserJSON);
       const loggedInUser = JSON.parse(loggedInUserJSON);
       dispatch(setUser(loggedInUser));
       blogService.setToken(loggedInUser.token);
@@ -46,6 +48,7 @@ const App = () => {
   return (
     <div>
       <h1>Blog List App</h1>
+      <Users />
       <Notification />
       {!user ? (
         <>
