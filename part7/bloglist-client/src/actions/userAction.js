@@ -7,23 +7,27 @@ export const SETUSER = 'SETUSER';
 export const UNSETUSER = 'UNSETUSER';
 
 export const login = (userObject) => async (dispatch) => {
-  try {
-    const user = await loginService.login(userObject);
+  const user = await loginService.login(userObject);
+  console.log(user);
+  if (user) {
     window.localStorage.setItem('loggedInBlogAppUser', JSON.stringify(user));
     blogService.setToken(user.token);
     dispatch({
       type: LOGIN,
       data: user,
     });
-  } catch (exception) {
-    console.log(exception);
   }
+  return;
 };
 
-export const logout = () => ({
-  type: LOGOUT,
-  data: null,
-});
+export const logout = () => (dispatch) => {
+  window.localStorage.removeItem('loggedInBlogAppUser');
+  blogService.setToken(null);
+  dispatch({
+    type: LOGOUT,
+    data: null,
+  });
+};
 
 export const setUser = (userObject) => ({
   type: SETUSER,
