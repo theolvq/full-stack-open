@@ -5,7 +5,7 @@ import {
   unsetNotification,
 } from '../actions/notificationActions';
 import { logout, unsetUser } from '../actions/userAction';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 
 const Header = () => {
   const user = useSelector((state) => state.user);
@@ -23,14 +23,18 @@ const Header = () => {
   };
   return (
     <div>
-      {user && (
-        <>
-          <h2>{user.name} is logged in</h2>
-          <button id="logout-btn" onClick={handleLogout}>
-            Log out
-          </button>
-        </>
-      )}
+      <nav>
+        <Link to="/">blogs</Link>
+        <Link to="/users">Users</Link>
+        {user && (
+          <>
+            <span>{user.name} is logged in</span>
+            <button id="logout-btn" onClick={handleLogout}>
+              Log out
+            </button>
+          </>
+        )}
+      </nav>
     </div>
   );
 };

@@ -47,9 +47,10 @@ const App = () => {
 
   return (
     <div>
+      <Header />
+
       <h1>Blog List App</h1>
       <Notification />
-      <Header />
       <Switch>
         <Route exact path="/">
           <Main />
