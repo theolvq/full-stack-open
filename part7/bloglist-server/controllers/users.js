@@ -32,7 +32,17 @@ usersRouter.get('/', async (req, res) => {
     author: 1,
     likes: 1,
   });
-  res.json(users);
+  res.status(200).json(users);
+});
+
+usersRouter.get('/:id', async (req, res) => {
+  const user = await User.findById(req.params.id).populate('blogs', {
+    title: 1,
+    author: 1,
+    likes: 1,
+  });
+
+  res.status(200).json(user);
 });
 
 module.exports = usersRouter;

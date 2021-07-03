@@ -1,0 +1,6 @@
+POST http://localhost:3003/api/blogs/60c4ea335e562511a94906c2/comments
+Content-Type: application/json
+
+{
+  "content": "testons nous dans les bois"
+}

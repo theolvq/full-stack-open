@@ -1,13 +1,20 @@
 const blogRouter = require('express').Router();
 const Blog = require('../models/blog');
+const Comment = require('../models/comment');
 
 blogRouter.get('/', async (req, res) => {
-  const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 });
+  const blogs = await Blog.find({})
+    .populate('user', { username: 1, name: 1 })
+    .populate('comments', {
+      content: 1,
+    });
   res.json(blogs);
 });
 
 blogRouter.get('/:id', async (req, res) => {
-  const blog = await Blog.findById(req.params.id);
+  const blog = await Blog.findById(req.params.id).populate('comments', {
+    content: 1,
+  });
   if (blog) {
     res.status(200).json(blog);
   } else {
@@ -33,6 +40,20 @@ blogRouter.post('/', async (req, res) => {
   } else {
     res.status(401).end();
   }
+});
+
+blogRouter.post('/:id/comments', async (req, res) => {
+  const { body } = req;
+  const blog = await Blog.findById(req.params.id);
+  const comment = new Comment({
+    content: body.content,
+    blog,
+  });
+
+  const savedComment = await comment.save();
+  blog.comments = blog.comments.concat(savedComment._id);
+  await blog.save();
+  res.status(201).json(savedComment);
 });
 
 blogRouter.put('/:id', async (req, res) => {
