@@ -1,15 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { deleteBlog, likeBlog } from '../actions/blogActions';
 import { useDispatch } from 'react-redux';
-import { likeBlog, deleteBlog } from '../actions/blogActions';
+import { useHistory } from 'react-router-dom';
 
 const Blog = ({ blog }) => {
-  const [areDetailsVisible, setAreDetailsVisible] = useState(false);
-  const buttonLabel = areDetailsVisible ? 'hide' : 'view';
-  const showDetails = () => {
-    setAreDetailsVisible(!areDetailsVisible);
-  };
-
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const like = (blog) => {
     const { id } = blog;
@@ -19,36 +15,28 @@ const Blog = ({ blog }) => {
   const deleteIt = (blog) => {
     const { id } = blog;
     dispatch(deleteBlog(id));
-  };
-
-  const blogStyle = {
-    padding: '10px 0 2px 5px',
-    border: '1px solid black',
-    marginBottom: 5,
+    history.push('/');
   };
 
   return (
-    <li className="blog-item" style={blogStyle}>
-      {blog.title} {blog.author}
-      <button className="details" onClick={showDetails}>
-        {buttonLabel}
-      </button>
-      {areDetailsVisible && (
-        <ul className="blog-details">
-          <li>{blog.url}</li>
-          <li className="like">
-            {blog.likes}
+    <div>
+      {blog && (
+        <>
+          <h2>{blog.title}</h2>
+          <a href={blog.url}>{blog.url}</a>
+          <p>
+            {blog.likes} {blog.likes > 1 ? 'likes' : 'like'}
             <button className="like-btn" onClick={() => like(blog)}>
               like
             </button>
-          </li>
-          <li>{blog.user.name}</li>
-          <button className="delete" onClick={() => deleteIt(blog)}>
-            remove
-          </button>
-        </ul>
+            <button className="delete" onClick={() => deleteIt(blog)}>
+              remove
+            </button>
+          </p>
+          <p>added by{blog.user.name}</p>
+        </>
       )}
-    </li>
+    </div>
   );
 };
 

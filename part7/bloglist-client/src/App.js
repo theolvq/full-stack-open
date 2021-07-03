@@ -12,6 +12,7 @@ import { setUser } from './actions/userAction';
 import { getThemAll } from './actions/usersAction';
 import Main from './components/Main';
 import Header from './components/Header';
+import Blog from './components/Blog';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -22,11 +23,15 @@ const App = () => {
   }, [dispatch]);
 
   const usersList = useSelector((state) => state.users);
-
   const userMatch = useRouteMatch('/users/:id');
-
   const matchedUser = userMatch
     ? usersList.find((user) => user.id === userMatch.params.id)
+    : null;
+
+  const blogList = useSelector((state) => state.blogs);
+  const blogMatch = useRouteMatch('/blogs/:id');
+  const matchedBlog = blogMatch
+    ? blogList.find((blog) => blog.id === blogMatch.params.id)
     : null;
 
   useEffect(() => {
@@ -54,6 +59,9 @@ const App = () => {
         </Route>
         <Route path="/users/:id">
           <User user={matchedUser} />
+        </Route>
+        <Route path="/blogs/:id">
+          <Blog blog={matchedBlog} />
         </Route>
       </Switch>
     </div>
