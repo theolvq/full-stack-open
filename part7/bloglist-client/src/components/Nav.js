@@ -34,7 +34,12 @@ const Header = () => {
             <Button to={`/users/${user.id}`} component={Link}>
               {user.name} is logged in
             </Button>
-            <Button variant="contained" id="logout-btn" onClick={handleLogout}>
+            <Button
+              variant="contained"
+              color="secondary"
+              id="logout-btn"
+              onClick={handleLogout}
+            >
               Log out
             </Button>
           </div>
