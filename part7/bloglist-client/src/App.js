@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Switch, Route, useRouteMatch } from 'react-router-dom';
+import { Paper, Container } from '@material-ui/core';
 
 import blogService from './services/blogs';
 import Notification from './components/Notification';
@@ -11,7 +12,7 @@ import { initBloglist } from './actions/blogActions';
 import { setUser } from './actions/userAction';
 import { getThemAll } from './actions/usersAction';
 import Main from './components/Main';
-import Header from './components/Header';
+import Nav from './components/Nav';
 import Blog from './components/Blog';
 
 const App = () => {
@@ -47,24 +48,26 @@ const App = () => {
 
   return (
     <div>
-      <Header />
-
-      <h1>Blog List App</h1>
-      <Notification />
-      <Switch>
-        <Route exact path="/">
-          <Main />
-        </Route>
-        <Route exact path="/users">
-          <Users />
-        </Route>
-        <Route path="/users/:id">
-          <User user={matchedUser} />
-        </Route>
-        <Route path="/blogs/:id">
-          <Blog blog={matchedBlog} />
-        </Route>
-      </Switch>
+      <Nav />
+      <Container>
+        <Paper>
+          <Notification />
+          <Switch>
+            <Route exact path="/">
+              <Main />
+            </Route>
+            <Route exact path="/users">
+              <Users />
+            </Route>
+            <Route path="/users/:id">
+              <User user={matchedUser} />
+            </Route>
+            <Route path="/blogs/:id">
+              <Blog blog={matchedBlog} />
+            </Route>
+          </Switch>
+        </Paper>
+      </Container>
     </div>
   );
 };

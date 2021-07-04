@@ -4,6 +4,7 @@ import Togglable from './Togglable';
 import LoginForm from './LoginForm';
 import BlogForm from './BlogForm';
 import BlogList from './BlogList';
+import Typography from '@material-ui/core/Typography';
 
 const Main = () => {
   const user = useSelector((state) => state.user);
@@ -11,9 +12,11 @@ const Main = () => {
 
   return (
     <div>
+      <Typography variant="h1" style={{ display: 'inline-block' }}>
+        Blog List App
+      </Typography>
       {!user ? (
         <>
-          <h2>Log in to the app</h2>
           <Togglable buttonLabel="Login">
             <LoginForm />
           </Togglable>

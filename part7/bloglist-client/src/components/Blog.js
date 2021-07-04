@@ -1,7 +1,9 @@
 import React from 'react';
 import { deleteBlog, likeBlog } from '../actions/blogActions';
 import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
 
 const Blog = ({ blog }) => {
   const dispatch = useDispatch();
@@ -22,18 +24,20 @@ const Blog = ({ blog }) => {
     <div>
       {blog && (
         <>
-          <h2>{blog.title}</h2>
-          <a href={blog.url}>{blog.url}</a>
-          <p>
+          <Typography variant="h2">{blog.title}</Typography>
+          <Link href={blog.url}>{blog.url}</Link>
+          <Typography variant="body1">
             {blog.likes} {blog.likes > 1 ? 'likes' : 'like'}
-            <button className="like-btn" onClick={() => like(blog)}>
+            <Button className="like-btn" onClick={() => like(blog)}>
               like
-            </button>
-            <button className="delete" onClick={() => deleteIt(blog)}>
+            </Button>
+            <Button className="delete" onClick={() => deleteIt(blog)}>
               remove
-            </button>
-          </p>
-          <p>added by{blog.user.name}</p>
+            </Button>
+          </Typography>
+          <Typography variant="body2">
+            added by <Link to={`/users/${blog.user.id}`}>{blog.user.name}</Link>
+          </Typography>
         </>
       )}
     </div>

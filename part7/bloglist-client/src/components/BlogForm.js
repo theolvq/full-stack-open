@@ -1,10 +1,10 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createBlog } from '../actions/blogActions';
-import {
-  setNotification,
-  unsetNotification,
-} from '../actions/notificationActions';
+import { setNotification } from '../actions/notificationActions';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
 
 const BlogForm = () => {
   const user = useSelector((state) => state.user);
@@ -27,9 +27,7 @@ const BlogForm = () => {
     dispatch(
       setNotification(`You added ${title} by ${author} to the bloglist`)
     );
-    setTimeout(() => {
-      dispatch(unsetNotification());
-    }, 5000);
+
     e.target.title.value = '';
     e.target.author.value = '';
     e.target.url.value = '';
@@ -37,22 +35,16 @@ const BlogForm = () => {
 
   return (
     <form onSubmit={addBlog}>
-      <h2>Create New</h2>
-      <label>
-        title:
-        <input type="text" name="title" id="title" />
-      </label>
-      <label>
-        author:
-        <input type="text" name="author" id="author" />
-      </label>
-      <label>
-        url:
-        <input type="text" name="url" id="url" />
-      </label>
-      <button id="submit-btn" type="submit">
-        Add
-      </button>
+      <Typography variant="h4">Create New Blog</Typography>
+
+      <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+        <TextField type="text" name="title" id="title" label="title" />
+        <TextField type="text" name="author" id="author" label="author" />
+        <TextField type="text" name="url" id="url" label="url" />
+        <Button id="submit-btn" type="submit" variant="outlined">
+          Add
+        </Button>
+      </div>
     </form>
   );
 };

@@ -1,30 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import AlertTitle from '@material-ui/lab/AlertTitle';
+import Alert from '@material-ui/lab/Alert';
+import Snackbar from '@material-ui/core/Snackbar';
 
 const Notification = () => {
   const message = useSelector((state) => state.notification);
-  const confirm = {
-    border: '3px solid hsla(110, 66%, 47%, 1)',
-    background: 'hsla(100, 66%, 47%, 0.8)',
-    borderRadius: '10px',
-    color: '#d2fcd1',
-  };
-  const error = {
-    border: '3px solid hsla(9, 87%, 47%, 1)',
-    background: 'hsla(9, 87%, 47%, 0.8)',
-    borderRadius: '10px',
-    color: '#fcd1e2',
-  };
-
+  const isError = message && message.toLowerCase().includes('error');
   if (message !== null) {
     return (
-      <div
-        className="notification"
-        style={message.toLowerCase().includes('error') ? error : confirm}
-      >
-        <p>{message}</p>
-      </div>
+      <Snackbar autoHideDuration={5000} open={message}>
+        <Alert
+          className="notification"
+          severity={isError ? 'error' : 'success'}
+        >
+          <AlertTitle>{isError ? 'Error' : 'Success'}</AlertTitle>
+          {message}
+        </Alert>
+      </Snackbar>
     );
   }
   return null;

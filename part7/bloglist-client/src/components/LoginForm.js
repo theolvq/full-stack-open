@@ -1,10 +1,11 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { login, setUser } from '../actions/userAction';
-import {
-  setNotification,
-  unsetNotification,
-} from '../actions/notificationActions';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+
+import { setNotification } from '../actions/notificationActions';
 
 const LoginForm = () => {
   const dispatch = useDispatch();
@@ -18,34 +19,33 @@ const LoginForm = () => {
       dispatch(login({ username, password }));
       dispatch(setUser({ username, password }));
       dispatch(setNotification(`${username} just logged in`));
-      setTimeout(() => {
-        dispatch(unsetNotification());
-      }, 5000);
     } catch (exception) {
       console.log(exception);
       dispatch(setNotification(`Error: ${exception}`));
-      setTimeout(() => {
-        dispatch(unsetNotification());
-      }, 5000);
     }
     e.target.username.value = '';
     e.target.password.value = '';
   };
 
   return (
-    <form onSubmit={logUser}>
-      <label>
-        username:
-        <input type="text" name="username" id="username" />
-      </label>
-      <label>
-        password:
-        <input type="password" name="password" id="password" />
-      </label>
-      <button id="login-btn" type="submit">
-        Login
-      </button>
-    </form>
+    <>
+      <Typography variant="h4">Log in to the app</Typography>
+      <form
+        onSubmit={logUser}
+        style={{ display: 'flex', justifyContent: 'flex-start' }}
+      >
+        <TextField type="text" name="username" id="username" label="username" />
+        <TextField
+          type="password"
+          name="password"
+          id="password"
+          label="password"
+        />
+        <Button id="login-btn" type="submit" variant="contained">
+          Login
+        </Button>
+      </form>
+    </>
   );
 };
 
