@@ -28,6 +28,24 @@ const create = async (newBlog) => {
   }
 };
 
+const comment = async (id, comment) => {
+  try {
+    const res = await axios.post(`${baseUrl}/${id}/comments`, comment);
+    return res.data;
+  } catch (exception) {
+    console.log(exception);
+  }
+};
+
+const getAllComments = async (id) => {
+  try {
+    const res = await axios.get(`${baseUrl}/${id}/comments`);
+    return res.data;
+  } catch (exception) {
+    console.log(exception);
+  }
+};
+
 const update = async (id, blogObject) => {
   const config = {
     headers: { Authorization: token },
@@ -58,6 +76,8 @@ const blogService = {
   create,
   update,
   deleteOne,
+  comment,
+  getAllComments,
   setToken,
 };
 
