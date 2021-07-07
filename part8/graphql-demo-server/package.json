@@ -11,7 +11,9 @@
   "license": "ISC",
   "dependencies": {
     "apollo-server": "^2.25.2",
-    "graphql": "^15.5.1"
+    "graphql": "^15.5.1",
+    "mongoose": "^5.13.2",
+    "mongoose-unique-validator": "^2.0.3"
   },
   "devDependencies": {
     "uuid": "^8.3.2"

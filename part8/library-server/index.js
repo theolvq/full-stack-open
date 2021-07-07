@@ -75,6 +75,7 @@ const resolvers = {
       if (authors.some(author => author.name !== args.author)) {
         const newAuthor = {
           name: args.author,
+          id: uuid(),
         };
         authors = authors.concat(newAuthor);
       }
