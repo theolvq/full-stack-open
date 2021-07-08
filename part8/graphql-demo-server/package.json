@@ -12,10 +12,12 @@
   "dependencies": {
     "apollo-server": "^2.25.2",
     "graphql": "^15.5.1",
+    "json-web-token": "^3.2.0",
     "mongoose": "^5.13.2",
     "mongoose-unique-validator": "^2.0.3"
   },
   "devDependencies": {
+    "dotenv": "^10.0.0",
     "uuid": "^8.3.2"
   }
 }
