@@ -4,7 +4,6 @@ const { v1: uuid } = require('uuid');
 const mongoose = require('mongoose');
 const Author = require('./models/author');
 const Book = require('./models/book');
-let { authors, books } = require('./data');
 
 const MONGOB_URI = process.env.MONGOB_URI;
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -27,6 +26,7 @@ const typeDefs = gql`
   type Author {
     name: String!
     born: Int
+    books: [Book!]!
     bookCount: Int
     id: ID!
   }
@@ -34,8 +34,8 @@ const typeDefs = gql`
   type Book {
     title: String!
     published: Int!
-    author: String!
-    genres: [String!]!
+    author: Author!
+    genres: [String!]
     id: ID!
   }
 
@@ -50,7 +50,7 @@ const typeDefs = gql`
     addBook(
       title: String!
       published: Int!
-      author: String
+      author: String!
       genres: [String!]!
     ): Book
     editAuthor(name: String!, setBornTo: Int): Author
@@ -68,31 +68,65 @@ const resolvers = {
       return res.length;
     },
     allBooks: async (root, args) => {
-      const books = await Book.find({});
-      // if (args.author) {
-      //   return books.filter(book => book.author === args.author);
-      // }
-      // if (args.genre) {
-      //   return books.filter(book =>
-      //     book.genres.some(genre => genre === args.genre)
-      //   );
-      // }
+      let books = [];
+      if (args.author && !args.genre) {
+        const author = await Author.findOne({ name: args.author });
+        books = await Book.find({ author: { $in: [author._id] } }).populate(
+          'author',
+          { name: 1 }
+        );
+        return books;
+      }
+      if (args.genre && !args.author) {
+        books = await Book.find({ genres: { $in: [args.genre] } }).populate(
+          'author',
+          { name: 1 }
+        );
+        return books;
+      }
+      if (args.author && args.genre) {
+        const author = await Author.findOne({ name: args.author });
+        books = await Book.find({
+          genres: { $in: [args.genre] },
+          author: { $in: [author._id] },
+        }).populate('author', { name: 1 });
+      }
       return books;
     },
-    allAuthors: () => {
-      const authors = Author.find({});
+    allAuthors: async () => {
+      const authors = await Author.find({}).populate('books', {
+        title: 1,
+        published: 1,
+        genres: 1,
+      });
+
       return authors;
-      // return authors.map(author => ({
-      //   ...author,
-      //   bookCount: books.filter(book => book.author === author.name).length,
-      // }));
     },
   },
   Mutation: {
     addBook: async (root, args) => {
-      const book = new Book({ ...args });
+      let author = await Author.findOne({ name: args.author });
+
+      if (!author) {
+        author = new Author({ name: args.author });
+        try {
+          await author.save();
+        } catch (error) {
+          throw new UserInputError(error.message, {
+            invalidArgs: args,
+          });
+        }
+      }
+
+      const book = new Book({
+        ...args,
+        author,
+      });
+
       try {
-        await book.save();
+        const savedBook = await book.save();
+        author.books.concat(savedBook);
+        await author.save();
       } catch (error) {
         throw new UserInputError(error.message, {
           invalidArgs: args,
@@ -101,14 +135,17 @@ const resolvers = {
 
       return book;
     },
-    editAuthor: (root, args) => {
-      const author = authors.find(author => author.name === args.name);
-      if (!author) return null;
-      const updatedAuthor = { ...author, born: args.setBornTo };
-      authors = authors.map(author =>
-        author.name === args.name ? updatedAuthor : author
+    editAuthor: async (root, args) => {
+      const author = await Author.findOneAndUpdate(
+        { name: args.name },
+        { born: args.setBornTo },
+        { new: true }
       );
-      return updatedAuthor;
+      if (!author)
+        throw new UserInputError(
+          'Invalid author name, how did you manage to do that?'
+        );
+      return author;
     },
   },
 };
