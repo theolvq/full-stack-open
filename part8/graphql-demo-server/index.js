@@ -7,6 +7,8 @@ const {
 const { v1: uuid } = require('uuid');
 const mongoose = require('mongoose');
 const Person = require('./models/person');
+const User = require('./models/user');
+const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const MONGOB_URI = process.env.MONGOB_URI;
@@ -86,7 +88,7 @@ const resolvers = {
       return Person.find({ Phone: { $exists: args.phone === 'YES' } });
     },
     findPerson: (root, args) => Person.findOne({ name: args.name }),
-    me: (root, args) => context.currentUser,
+    me: (root, args, context) => context.currentUser,
   },
   Person: {
     address: root => ({
@@ -95,9 +97,10 @@ const resolvers = {
     }),
   },
   Mutation: {
-    addPerson: async (root, args) => {
+    addPerson: async (root, args, context) => {
       const person = new Person({ ...args });
       const currentUser = context.currentUser;
+      console.log(context);
       if (!currentUser) {
         throw new AuthenticationError('not authenticated');
       }
@@ -168,9 +171,9 @@ const server = new ApolloServer({
   resolvers,
   context: async ({ req }) => {
     const auth = req ? req.headers.authorization : null;
-    if (auth && auth.toLocaleLowerCase().startsWith('bearer')) {
+    if (auth && auth.toLowerCase().startsWith('bearer')) {
       const decodedToken = jwt.verify(auth.substring(7), JWT_SECRET);
-      const currentUser = await User.findByID(decodedToken.id).populate(
+      const currentUser = await User.findById(decodedToken.id).populate(
         'friends'
       );
       return { currentUser };

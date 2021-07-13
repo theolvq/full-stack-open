@@ -9,16 +9,25 @@ function AddPersonForm({ setError }) {
   const [city, setCity] = useState('');
 
   const [createPerson] = useMutation(CREATE_PERSON, {
-    refetchQueries: [{ query: ALL_PERSONS }],
     onError: error => {
       setError(error.graphQLErrors[0].message);
     },
+    update: (store, response) => {
+      const dataInStore = store.readQuery({ query: ALL_PERSONS });
+      store.writeQuery({
+        query: ALL_PERSONS,
+        data: {
+          ...dataInStore,
+          allPersons: [...dataInStore.allPersons, response.data.addPerson],
+        },
+      });
+    },
   });
 
-  const submit = e => {
+  const submit = async e => {
     e.preventDefault();
     createPerson({
-      variables: { name, phone, street, city },
+      variables: { name, street, city, phone: phone.length > 0 ? phone : null },
     });
 
     setName('');
@@ -58,7 +67,7 @@ function AddPersonForm({ setError }) {
             onChange={({ target }) => setCity(target.value)}
           />
         </div>
-        <button type="submit">add!</button>
+        <button type='submit'>add!</button>
       </form>
     </div>
   );
