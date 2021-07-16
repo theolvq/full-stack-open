@@ -54,13 +54,13 @@ function App() {
       <Books show={page === 'books'} />
       {!token && page === 'login' ? (
         <LoginForm
-          // show={page === 'login'}
+          show={page === 'login'}
           setToken={setToken}
           setError={notify}
           setPage={setPage}
         />
       ) : (
-        <NewBook show={page === 'add'} />
+        <NewBook show={page === 'add'} setPage={setPage} />
       )}
     </div>
   );
