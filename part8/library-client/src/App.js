@@ -5,6 +5,7 @@ import Books from './components/Books';
 import LoginForm from './components/LoginForm';
 import NewBook from './components/NewBook';
 import Notify from './components/Notify';
+import Recommended from './components/Recommended';
 
 function App() {
   const [errorMessage, setErrorMessage] = useState('');
@@ -45,6 +46,7 @@ function App() {
           <>
             {' '}
             <button onClick={() => setPage('add')}>add book</button>
+            <button onClick={() => setPage('recommended')}>recommended</button>
             <button onClick={logout}>logout</button>{' '}
           </>
         )}
@@ -60,7 +62,11 @@ function App() {
           setPage={setPage}
         />
       ) : (
-        <NewBook show={page === 'add'} setPage={setPage} />
+        <>
+          {' '}
+          <NewBook show={page === 'add'} setPage={setPage} />
+          <Recommended show={page === 'recommended'} />{' '}
+        </>
       )}
     </div>
   );
