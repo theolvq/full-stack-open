@@ -88,27 +88,27 @@ const resolvers = {
     },
     allBooks: async (root, args) => {
       let books = [];
-      if (args.author && !args.genre) {
-        const author = await Author.findOne({ name: args.author });
-        books = await Book.find({ author: { $in: [author._id] } }).populate(
-          'author',
-          { name: 1 }
-        );
-        return books;
-      }
-      if (args.genre && !args.author) {
-        books = await Book.find({ genres: { $in: [args.genre] } }).populate(
-          'author',
-          { name: 1 }
-        );
-        return books;
-      }
       if (args.author && args.genre) {
         const author = await Author.findOne({ name: args.author });
         books = await Book.find({
           genres: { $in: [args.genre] },
           author: { $in: [author._id] },
         }).populate('author', { name: 1 });
+      } else if (args.author && !args.genre) {
+        const author = await Author.findOne({ name: args.author });
+        books = await Book.find({ author: { $in: [author._id] } }).populate(
+          'author',
+          { name: 1 }
+        );
+        return books;
+      } else if (args.genre && !args.author) {
+        books = await Book.find({ genres: { $in: [args.genre] } }).populate(
+          'author',
+          { name: 1 }
+        );
+        return books;
+      } else {
+        books = await Book.find({}).populate('author', { name: 1 });
       }
       return books;
     },
@@ -201,7 +201,9 @@ const resolvers = {
         id: user._id,
       };
 
-      return { value: jwt.sign(userForToken, JWT_SECRET) };
+      return {
+        value: jwt.sign(userForToken, JWT_SECRET),
+      };
     },
   },
 };
@@ -213,7 +215,7 @@ const server = new ApolloServer({
     const auth = req ? req.headers.authorization : null;
     if (auth && auth.toLocaleLowerCase().startsWith('bearer')) {
       const decodedToken = jwt.verify(auth.substring(7), JWT_SECRET);
-      const currentUser = await User.findByID(decodedToken.id);
+      const currentUser = await User.findById(decodedToken.id);
       return { currentUser };
     }
   },
