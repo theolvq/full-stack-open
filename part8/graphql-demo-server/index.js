@@ -9,8 +9,10 @@ const mongoose = require('mongoose');
 const Person = require('./models/person');
 const User = require('./models/user');
 const jwt = require('jsonwebtoken');
+const { PubSub } = require('apollo-server');
 require('dotenv').config();
 
+const pubsub = new PubSub();
 const MONGOB_URI = process.env.MONGOB_URI;
 const JWT_SECRET = process.env.JWT_SECRET;
 console.log('connecting to', MONGOB_URI);
@@ -76,6 +78,10 @@ const typeDefs = gql`
     login(username: String!, password: String!): Token
     addAsFriend(name: String!): User
   }
+
+  type Subscription {
+    personAdded: Person!
+  }
 `;
 
 const resolvers = {
@@ -100,7 +106,6 @@ const resolvers = {
     addPerson: async (root, args, context) => {
       const person = new Person({ ...args });
       const currentUser = context.currentUser;
-      console.log(context);
       if (!currentUser) {
         throw new AuthenticationError('not authenticated');
       }
@@ -113,6 +118,8 @@ const resolvers = {
           invalidArgs: args,
         });
       }
+
+      pubsub.publish('PERSON_ADDED', { personAdded: person });
       return person;
     },
     editNumber: async (root, args) => {
@@ -164,6 +171,11 @@ const resolvers = {
       return currentUser;
     },
   },
+  Subscription: {
+    personAdded: {
+      subscribe: () => pubsub.asyncIterator(['PERSON_ADDED']),
+    },
+  },
 };
 
 const server = new ApolloServer({
@@ -181,8 +193,9 @@ const server = new ApolloServer({
   },
 });
 
-server.listen().then(({ url }) => {
+server.listen().then(({ url, subscriptionsUrl }) => {
   console.log(`Server ready at ${url}`);
+  console.log(`Subscription ready at ${subscriptionsUrl}`);
 });
 
 // let persons = [
